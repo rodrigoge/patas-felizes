@@ -1,12 +1,13 @@
 package br.com.pf.api.domains.account.services;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @Log4j2
@@ -15,24 +16,19 @@ public class TokenService {
     @Value("${secret.key}")
     private String secretKey;
 
-    public String generateToken(String accountId) {
-        var secretKeyBytes = secretKey.getBytes();
-        return Jwts
-                .builder()
-                .claim("accountId", accountId)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 3600000))
-                .signWith(Keys.hmacShaKeyFor(secretKeyBytes))
-                .compact();
+    public String generateToken(String email) {
+        var instantNow = Instant.now();
+        var tenMinutesInSeconds = 10 * 60;
+        var expiresAt = instantNow.plus(tenMinutesInSeconds, ChronoUnit.SECONDS);
+        return JWT.create()
+                .withClaim("email", email)
+                .withSubject(email)
+                .withIssuedAt(instantNow)
+                .withExpiresAt(expiresAt)
+                .sign(Algorithm.HMAC256(secretKey));
     }
 
-    public boolean isValidToken(String token) {
-        try {
-            var secretKeyBytes = secretKey.getBytes();
-            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKeyBytes)).build().parse(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public String verifyToken(String token) {
+        return JWT.require(Algorithm.HMAC256(secretKey)).build().verify(token).getSubject();
     }
 }

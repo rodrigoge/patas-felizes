@@ -1,6 +1,8 @@
 package br.com.pf.api.domains.account.services;
 
+import br.com.pf.api.domains.account.db.Account;
 import br.com.pf.api.domains.account.db.AccountRepository;
+import br.com.pf.api.domains.account.dto.AccountLoginResponseDTO;
 import br.com.pf.api.domains.account.dto.AccountRequestDTO;
 import br.com.pf.api.domains.account.dto.AccountResponseDTO;
 import br.com.pf.api.domains.account.dto.ResetPasswordRequestDTO;
@@ -10,6 +12,10 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +24,7 @@ import java.util.UUID;
 
 @Service
 @Log4j2
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -66,7 +72,8 @@ public class AccountService {
     @Transactional
     public AccountResponseDTO updatePassword(String token, ResetPasswordRequestDTO resetPasswordRequest) {
         log.info("Starting the update password flow");
-        if (tokenService.isValidToken(token)) {
+        var accountEmail = tokenService.verifyToken(token);
+        if (ObjectUtils.isEmpty(accountEmail)) {
             throw new GenericException(HttpStatus.BAD_REQUEST, "This token is invalid");
         }
         var accountFounded = accountRepository.findByEmail(resetPasswordRequest.email()).orElseThrow(() ->
@@ -86,5 +93,23 @@ public class AccountService {
         var accountResponse = accountMapper.buildAccountToAccountResponse(accountSaved);
         log.info("Finishing the update password flow");
         return accountResponse;
+    }
+
+    public AccountLoginResponseDTO login(Authentication authenticate) {
+        log.info("Starting the login flow");
+        var account = (Account) authenticate.getPrincipal();
+        var accountResponse = accountMapper.buildAccountToAccountResponse(account);
+        var token = tokenService.generateToken(account.getEmail());
+        var accountLoginResponse = new AccountLoginResponseDTO(accountResponse, token);
+        log.info("Finishing the login flow");
+        return accountLoginResponse;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return accountRepository.findByEmail(username).orElseThrow(() -> new GenericException(
+                HttpStatus.BAD_REQUEST,
+                "This account doesn't exists")
+        );
     }
 }

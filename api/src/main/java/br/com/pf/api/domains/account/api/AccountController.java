@@ -1,5 +1,7 @@
 package br.com.pf.api.domains.account.api;
 
+import br.com.pf.api.domains.account.dto.AccountLoginRequestDTO;
+import br.com.pf.api.domains.account.dto.AccountLoginResponseDTO;
 import br.com.pf.api.domains.account.dto.AccountRequestDTO;
 import br.com.pf.api.domains.account.dto.AccountResponseDTO;
 import br.com.pf.api.domains.account.dto.ResetPasswordRequestDTO;
@@ -11,6 +13,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +36,9 @@ public class AccountController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @PostMapping
     public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRequestDTO accountRequest) {
         log.info("Entering the create account flow");
@@ -46,7 +53,7 @@ public class AccountController {
         log.info("Entering the update account flow");
         var accountResponse = accountService.updateAccount(accountId, accountRequest);
         log.info("Exiting the update account flow");
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(accountResponse);
     }
 
     @PostMapping("/send/email")
@@ -63,6 +70,19 @@ public class AccountController {
         log.info("Entering the update password flow");
         var accountResponse = accountService.updatePassword(token, resetPasswordRequest);
         log.info("Exiting the update password flow");
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(accountResponse);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AccountLoginResponseDTO> login(@Valid @RequestBody AccountLoginRequestDTO accountLoginRequest) {
+        log.info("Entering the login flow");
+        var authToken = new UsernamePasswordAuthenticationToken(
+                accountLoginRequest.email(),
+                accountLoginRequest.password()
+        );
+        var authenticate = authenticationManager.authenticate(authToken);
+        var accountLoginResponse = accountService.login(authenticate);
+        log.info("Exiting the login flow");
+        return ResponseEntity.status(HttpStatus.OK).body(accountLoginResponse);
     }
 }
