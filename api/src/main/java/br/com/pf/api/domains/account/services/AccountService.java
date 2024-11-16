@@ -3,9 +3,11 @@ package br.com.pf.api.domains.account.services;
 import br.com.pf.api.domains.account.db.AccountRepository;
 import br.com.pf.api.domains.account.dto.AccountRequestDTO;
 import br.com.pf.api.domains.account.dto.AccountResponseDTO;
+import br.com.pf.api.domains.account.dto.ResetPasswordRequestDTO;
 import br.com.pf.api.domains.account.mappers.AccountMapper;
 import br.com.pf.api.exceptions.GenericException;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class AccountService {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Transactional
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequest) {
@@ -55,6 +60,31 @@ public class AccountService {
         var accountSaved = accountRepository.save(account);
         var accountResponse = accountMapper.buildAccountToAccountResponse(accountSaved);
         log.info("Finishing the update account flow");
+        return accountResponse;
+    }
+
+    @Transactional
+    public AccountResponseDTO updatePassword(String token, ResetPasswordRequestDTO resetPasswordRequest) {
+        log.info("Starting the update password flow");
+        if (tokenService.isValidToken(token)) {
+            throw new GenericException(HttpStatus.BAD_REQUEST, "This token is invalid");
+        }
+        var accountFounded = accountRepository.findByEmail(resetPasswordRequest.email()).orElseThrow(() ->
+                new GenericException(HttpStatus.BAD_REQUEST, "This e-mail doesn't exists")
+        );
+        if (ObjectUtils.isEmpty(accountFounded)) {
+            throw new GenericException(HttpStatus.BAD_REQUEST, "This e-mail already in use");
+        }
+        var accountRequest = new AccountRequestDTO(
+                accountFounded.getName(),
+                accountFounded.getEmail(),
+                resetPasswordRequest.password(),
+                accountFounded.getAvatar()
+        );
+        var account = accountMapper.buildAccountToUpdate(accountFounded, accountRequest);
+        var accountSaved = accountRepository.save(account);
+        var accountResponse = accountMapper.buildAccountToAccountResponse(accountSaved);
+        log.info("Finishing the update password flow");
         return accountResponse;
     }
 }
