@@ -1,10 +1,13 @@
 package br.com.pf.api.domains.account.db;
 
+import br.com.pf.api.domains.pets.db.Pet;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -44,6 +47,10 @@ public class Account implements UserDetails {
 
     @Column
     private byte[] avatar;
+
+    @OneToOne
+    @JoinColumn(name = "pet_id", referencedColumnName = "petId")
+    private Pet pet;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
