@@ -1,6 +1,7 @@
 package br.com.pf.api.domains.pets.dto;
 
 import br.com.pf.api.domains.account.db.Account;
+import br.com.pf.api.domains.account.dto.AccountResponseDTO;
 import br.com.pf.api.domains.pets.enums.PetType;
 import jakarta.validation.constraints.NotBlank;
 
@@ -23,9 +24,9 @@ public record PetResponseDTO(
         byte[] avatar,
 
         @NotBlank
-        Account giver,
+        AccountResponseDTO giver,
 
-        Account receiver
+        AccountResponseDTO receiver
 
 ) {
 }
