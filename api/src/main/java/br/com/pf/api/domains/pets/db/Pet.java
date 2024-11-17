@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -55,6 +57,11 @@ public class Pet {
     @Column
     private byte[] avatar;
 
-    @OneToOne(mappedBy = "pet", cascade = CascadeType.PERSIST)
-    private Account owner;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "giver_id", referencedColumnName = "account_id")
+    private Account giver;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", referencedColumnName = "account_id")
+    private Account receiver;
 }

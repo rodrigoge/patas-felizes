@@ -31,6 +31,7 @@ public class Account implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "account_id")
     private UUID accountId;
 
     @Column
@@ -47,10 +48,6 @@ public class Account implements UserDetails {
 
     @Column
     private byte[] avatar;
-
-    @OneToOne
-    @JoinColumn(name = "pet_id", referencedColumnName = "petId")
-    private Pet pet;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

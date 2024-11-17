@@ -5,8 +5,9 @@ CREATE TABLE pet (
     type VARCHAR(50),
     age INT NOT NULL,
     breed VARCHAR(255) NOT NULL,
-    avatar BYTEA
+    avatar BYTEA,
+    giver_id UUID NOT NULL,
+    receiver_id UUID,
+    CONSTRAINT fk_giver FOREIGN KEY (giver_id) REFERENCES account(account_id),
+    CONSTRAINT fk_receiver FOREIGN KEY (receiver_id) REFERENCES account(account_id)
 );
-
-ALTER TABLE account ADD COLUMN pet_id UUID UNIQUE, ADD CONSTRAINT fk_account_pet FOREIGN KEY (pet_id) REFERENCES pet(pet_id)
-ON DELETE SET NULL;
