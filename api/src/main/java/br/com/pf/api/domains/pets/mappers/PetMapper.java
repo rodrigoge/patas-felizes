@@ -17,7 +17,7 @@ public class PetMapper {
     @Autowired
     private AccountMapper accountMapper;
 
-    public Pet buildRequestToPet(CreatePetRequestDTO createPetRequest, Account giver) {
+    public Pet buildRequestToPet(CreatePetRequestDTO createPetRequest, Account giver, Account receiver) {
         log.info("Building the object to be save");
         return Pet
                 .builder()
@@ -28,6 +28,7 @@ public class PetMapper {
                 .breed(createPetRequest.breed())
                 .avatar(createPetRequest.avatar())
                 .giver(giver)
+                .receiver(receiver)
                 .build();
     }
 

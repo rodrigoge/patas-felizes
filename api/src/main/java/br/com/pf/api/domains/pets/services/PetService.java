@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,12 +32,13 @@ public class PetService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Transactional
     public PetResponseDTO createPet(UUID accountId, CreatePetRequestDTO createPetRequest) {
         log.info("Starting the create pet flow");
         var account = accountRepository.findById(accountId).orElseThrow(() -> new GenericException(
                 HttpStatus.BAD_REQUEST, "This giver don't exists"
         ));
-        var pet = petMapper.buildRequestToPet(createPetRequest, account);
+        var pet = petMapper.buildRequestToPet(createPetRequest, account, null);
         var petSaved = petRepository.save(pet);
         var petResponse = petMapper.buildPetToPetResponse(petSaved);
         log.info("Finishing the create pet flow");
@@ -80,5 +82,19 @@ public class PetService {
             }
             return predicate;
         });
+    }
+
+    @Transactional
+    public PetResponseDTO updatePet(UUID petId, CreatePetRequestDTO petRequest) {
+        log.info("Starting the update pet flow");
+        var petFounded = petRepository.findById(petId);
+        if (petFounded.isEmpty()) {
+            throw new GenericException(HttpStatus.BAD_REQUEST, "This pet doesn't exists");
+        }
+        var pet = petMapper.buildRequestToPet(petRequest, petFounded.get().getGiver(), petFounded.get().getReceiver());
+        var petSaved = petRepository.save(pet);
+        var petResponse = petMapper.buildPetToPetResponse(petSaved);
+        log.info("Finishing the update pet flow");
+        return petResponse;
     }
 }
