@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,12 +30,12 @@ public class PetController {
     @Autowired
     private PetService petService;
 
-    @PostMapping("/{accountId}")
-    public ResponseEntity<PetResponseDTO> createPet(@PathVariable UUID accountId, @Valid @RequestBody CreatePetRequestDTO createPetRequest) {
+    @PostMapping("/{petId}")
+    public ResponseEntity<PetResponseDTO> createPet(@PathVariable UUID petId, @Valid @RequestBody CreatePetRequestDTO createPetRequest) {
         log.info("Entering the create pet flow");
-        var accountResponse = petService.createPet(accountId, createPetRequest);
+        var petResponse = petService.createPet(petId, createPetRequest);
         log.info("Exiting the create pet flow");
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(petResponse);
     }
 
     @GetMapping
@@ -45,8 +46,17 @@ public class PetController {
     ) {
         log.info("Entering the get pets flow");
         var getPetsRequest = new GetPetsRequestDTO(name, type, breed, giverId);
-        var accountResponse = petService.findPets(getPetsRequest);
+        var petResponse = petService.findPets(getPetsRequest);
         log.info("Exiting the get pets flow");
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(petResponse);
+    }
+
+    @PutMapping("/{petId}")
+    public ResponseEntity<PetResponseDTO> updatePet(@PathVariable UUID petId,
+                                                    @Valid @RequestBody CreatePetRequestDTO petRequest) {
+        log.info("Entering the update pet flow");
+        var petResponse = petService.updatePet(petId, petRequest);
+        log.info("Exiting the update pet flow");
+        return ResponseEntity.status(HttpStatus.OK).body(petResponse);
     }
 }
