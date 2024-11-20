@@ -1,0 +1,21 @@
+@use "./colors.scss";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Outfit:wght@100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: colors.$black-600;
+  color: colors.$white;
+  font-family: "Outfit", sans-serif;
+}
+
+input {
+  font-family: "Outfit", sans-serif;
+  outline: none;
+}
