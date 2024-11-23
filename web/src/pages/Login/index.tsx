@@ -1,11 +1,17 @@
 import "./styles.scss";
 import LoginImage from "../../assets/Login-image.png";
 import Icon from "../../assets/favicon.svg";
-import { useState } from "react";
+import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../services/api";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
   const [hidePassword, setHidePassword] = useState(true);
 
   async function handleShowOrHidePassword() {
@@ -19,6 +25,34 @@ export default function Login() {
     } else {
       passwordInputElement.type = "password";
       setHidePassword(true);
+    }
+  }
+
+  async function handleSubmitLogin(e: React.FormEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    try {
+      const user = { email, password };
+      const response = await api.post("/v1/accounts/login", user);
+
+      api.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response.data.token}`;
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("isAuthenticated", JSON.stringify(true));
+
+      toast.success("Login efetuado com sucesso");
+
+      navigate("/");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Erro ao efetuar login");
+      } else if (error instanceof Error) {
+        toast.error(error.message || "Ocorreu um erro inesperado");
+      } else {
+        toast.error("Erro desconhecido");
+      }
     }
   }
 
@@ -38,7 +72,12 @@ export default function Login() {
 
         <div className="content-container">
           <div className="input-container">
-            <input type="text" placeholder="Digite o seu e-mail" />
+            <input
+              type="text"
+              placeholder="Digite o seu e-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
           <div className="input-container">
@@ -46,6 +85,8 @@ export default function Login() {
               id="input-password"
               type="password"
               placeholder="Digite a sua senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             {hidePassword ? (
@@ -71,7 +112,7 @@ export default function Login() {
             Esqueceu sua senha?
           </Link>
 
-          <button>Login</button>
+          <button onClick={handleSubmitLogin}>Login</button>
         </div>
 
         <Link to={"/"} className="register-account-link">
