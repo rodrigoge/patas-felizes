@@ -1,5 +1,5 @@
 import "./styles.scss";
-import LoginImage from "../../assets/Login-image.png";
+import RegisterAccountImage from "../../assets/Register-Account-image.png";
 import Icon from "../../assets/favicon.svg";
 import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -8,8 +8,9 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
-export default function Login() {
+export default function RegisterAccount() {
   const navigate = useNavigate();
+  const [name, setName] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [hidePassword, setHidePassword] = useState(true);
@@ -28,12 +29,12 @@ export default function Login() {
     }
   }
 
-  async function handleSubmitLogin(e: React.FormEvent<HTMLButtonElement>) {
+  async function handleSubmitRegister(e: React.FormEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     try {
-      const user = { email, password };
-      const response = await api.post("/v1/accounts/login", user);
+      const user = { name, email, password };
+      const response = await api.post("/v1/accounts", user);
 
       api.defaults.headers.common[
         "Authorization"
@@ -42,12 +43,14 @@ export default function Login() {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("isAuthenticated", JSON.stringify(true));
 
-      toast.success("Login efetuado com sucesso");
+      toast.success("Cadastro efetuado com sucesso");
 
-      navigate("/");
+      navigate("/home");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Erro ao efetuar login");
+        toast.error(
+          error.response?.data?.message || "Erro ao efetuar cadastro"
+        );
       } else if (error instanceof Error) {
         toast.error(error.message || "Ocorreu um erro inesperado");
       } else {
@@ -57,20 +60,27 @@ export default function Login() {
   }
 
   return (
-    <div className="login-container">
-      <img src={LoginImage} />
+    <div className="register-account-container">
+      <img src={RegisterAccountImage} />
 
       <form>
         <div className="header-container">
           <img src={Icon} />
           <span>Patas Felizes</span>
 
-          <div className="description">
-            Bem vindo(a) novamente, faça o seu login.
-          </div>
+          <div className="description">Crie sua conta agora mesmo.</div>
         </div>
 
         <div className="content-container">
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Digite o seu nome completo"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
           <div className="input-container">
             <input
               type="text"
@@ -108,15 +118,11 @@ export default function Login() {
             )}
           </div>
 
-          <Link to={"/send-email"} className="recovery-password-link">
-            Esqueceu sua senha?
-          </Link>
-
-          <button onClick={handleSubmitLogin}>Login</button>
+          <button onClick={handleSubmitRegister}>Cadastrar</button>
         </div>
 
-        <Link to={"/register-account"} className="register-account-link">
-          Não possui conta? Crie uma agora mesmo
+        <Link to={"/"} className="home-link">
+          Já possui um cadastro? Acesse a sua conta
         </Link>
       </form>
     </div>
