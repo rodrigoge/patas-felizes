@@ -1,0 +1,47 @@
+@use "../../styles/colors.scss";
+
+.my-registrations-container {
+  .title-button {
+    display: flex;
+    flex-direction: row;
+    padding: 20px 40px;
+    justify-content: space-between;
+
+    .name {
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    button {
+      background-color: colors.$pink;
+      width: 180px;
+      height: 36px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    padding: 0px 40px;
+  }
+
+  .cards {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 0px 40px;
+
+    @media (max-width: 1600px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

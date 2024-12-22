@@ -1,0 +1,111 @@
+@use "../../styles/colors.scss";
+
+.pet-detail-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .content {
+    width: 60%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    .name-button,
+    .user-address {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+
+    .name-button {
+      .name {
+        font-weight: 600;
+        font-size: 24px;
+      }
+
+      button {
+        background-color: colors.$pink;
+        width: 180px;
+        height: 36px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+
+    .user-address {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .username {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 600;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+      }
+
+      .address {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        color: colors.$grey;
+      }
+    }
+
+    .breed,
+    .age {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      gap: 8px;
+      color: colors.$grey;
+    }
+
+    .breed {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      color: colors.$grey;
+    }
+
+    .age {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      color: colors.$grey;
+      margin-top: 16px;
+    }
+
+    .image-pet {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        margin-top: 16px;
+        height: 300px;
+        padding: 16px 32px;
+      }
+    }
+  }
+}
