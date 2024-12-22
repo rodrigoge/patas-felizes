@@ -1,0 +1,41 @@
+@use "../../styles/colors.scss";
+
+.navbar-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  padding: 20px 40px;
+
+  .logo-mark {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+
+    img {
+      width: 28px;
+    }
+
+    span {
+      font-weight: 600;
+    }
+  }
+
+  .navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+
+    a {
+      text-decoration: none;
+      color: colors.$white;
+      font-size: 14px;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+@use "../../styles/colors.scss";
+
+.home-container {
+  .tags {
+    display: flex;
+    gap: 8px;
+    padding: 0px 40px;
+  }
+
+  .cards {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 0px 40px;
+
+    @media (max-width: 1600px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

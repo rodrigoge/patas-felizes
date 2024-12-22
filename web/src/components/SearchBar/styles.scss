@@ -1,0 +1,22 @@
+@use "../../styles/colors.scss";
+
+.search-bar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 28px 40px;
+  padding: 0px 40px;
+  gap: 8px;
+  background-color: colors.$black-900;
+  border-radius: 6px;
+  color: colors.$grey;
+
+  input {
+    width: 100%;
+    height: 46px;
+    background: none;
+    color: colors.$white;
+    font-size: 14px;
+  }
+}
