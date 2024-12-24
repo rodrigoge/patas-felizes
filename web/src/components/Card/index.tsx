@@ -2,21 +2,21 @@ import "./styles.scss";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlinePets } from "react-icons/md";
 import { FaBirthdayCake } from "react-icons/fa";
-import LoginImage from "../../assets/Login-image.png";
+import { FaRegImage } from "react-icons/fa";
 
 type Props = {
   image: string;
   name: string;
   address: string;
   breed: string;
-  age: string;
+  age: number;
 };
 
 export default function Card({ image, name, address, breed, age }: Props) {
   return (
     <div className="card-container">
       <div className="avatar">
-        <img src={LoginImage} alt={image} />
+        {image ? <img src={image} /> : <FaRegImage size={200} />}
       </div>
       <span className="name">{name}</span>
       <span className="address">

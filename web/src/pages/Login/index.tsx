@@ -33,18 +33,17 @@ export default function Login() {
 
     try {
       const user = { email, password };
-      const response = await api.post("/v1/accounts/login", user);
+      const response = await api.post("/accounts/login", user);
 
       api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${response.data.token}`;
 
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("isAuthenticated", JSON.stringify(true));
 
       toast.success("Login efetuado com sucesso");
 
-      navigate("/");
+      navigate("/home");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message || "Erro ao efetuar login");

@@ -34,18 +34,9 @@ export default function RegisterAccount() {
 
     try {
       const user = { name, email, password };
-      const response = await api.post("/v1/accounts", user);
-
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.token}`;
-
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("isAuthenticated", JSON.stringify(true));
-
+      await api.post("/accounts", user);
       toast.success("Cadastro efetuado com sucesso");
-
-      navigate("/home");
+      navigate("/");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         toast.error(
