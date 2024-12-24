@@ -10,9 +10,9 @@ import { AxiosError } from "axios";
 
 export default function RegisterAccount() {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [hidePassword, setHidePassword] = useState(true);
 
   async function handleShowOrHidePassword() {

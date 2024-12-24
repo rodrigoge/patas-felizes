@@ -3,6 +3,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlinePets } from "react-icons/md";
 import { FaBirthdayCake } from "react-icons/fa";
 import { FaRegImage } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   image: string;
@@ -13,10 +14,16 @@ type Props = {
 };
 
 export default function Card({ image, name, address, breed, age }: Props) {
+  const navigate = useNavigate();
+
+  async function handleOpenDetail() {
+    navigate("/pet-detail", { state: { image, name, address, breed, age } });
+  }
+
   return (
-    <div className="card-container">
+    <div className="card-container" onClick={() => handleOpenDetail()}>
       <div className="avatar">
-        {image ? <img src={image} /> : <FaRegImage size={200} />}
+        {image ? <img src={image} /> : <FaRegImage size={200} color="grey" />}
       </div>
       <span className="name">{name}</span>
       <span className="address">

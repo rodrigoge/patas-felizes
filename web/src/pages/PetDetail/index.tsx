@@ -4,15 +4,18 @@ import LoginImage from "../../assets/Login-image.png";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlinePets } from "react-icons/md";
 import { FaBirthdayCake } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
 export default function PetDetail() {
+  const location = useLocation();
+
   return (
     <div className="pet-detail-container">
       <NavBar />
 
       <div className="content">
         <div className="name-button">
-          <span className="name">Caramelo</span>
+          <span className="name">{location.state.name}</span>
           <button>Adotar</button>
         </div>
 
@@ -23,19 +26,19 @@ export default function PetDetail() {
           </div>
           <span className="address">
             <FaLocationDot />
-            Rua St. Pierre, 50
+            {location.state.address}
           </span>
         </div>
 
         <span className="breed">
           <MdOutlinePets />
-          Border Collie
+          {location.state.breed}
         </span>
         <span className="age">
-          <FaBirthdayCake /> 2 anos
+          <FaBirthdayCake /> {location.state.age}
         </span>
         <div className="image-pet">
-          <img src={LoginImage} />
+          <img src={location.state.image} />
         </div>
       </div>
     </div>

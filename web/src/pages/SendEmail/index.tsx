@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 
 export default function SendEmail() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>();
+  const [email, setEmail] = useState<string>("");
 
   async function handleSubmitSendEmail(e: React.FormEvent<HTMLButtonElement>) {
     e.preventDefault();

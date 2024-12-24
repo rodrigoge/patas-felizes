@@ -11,10 +11,10 @@ export default function NavBar() {
       </div>
 
       <div className="navigation">
-        <Link to="">Adoções</Link>
-        <Link to="">Doar</Link>
-        <Link to="">Minha Conta</Link>
-        <Link to="">Sair</Link>
+        <Link to="/home">Adoções</Link>
+        <Link to="/register-pet">Doar</Link>
+        <Link to="/my-account">Minha Conta</Link>
+        <Link to="/">Sair</Link>
       </div>
     </header>
   );

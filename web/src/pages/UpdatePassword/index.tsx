@@ -10,10 +10,10 @@ import { AxiosError } from "axios";
 
 export default function UpdatePassword() {
   const navigate = useNavigate();
-  const [token] = useState<string>();
-  const [email] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [confirmPassword, setConfirmPassword] = useState<string>();
+  const [token] = useState<string>("");
+  const [email] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [hidePassword, setHidePassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
 

@@ -7,7 +7,7 @@ import { BiSolidDog } from "react-icons/bi";
 import { FaCat } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 import api from "../../services/api";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PetInterface } from "../../interfaces/PetInterface";
 
 enum PetType {
@@ -17,6 +17,7 @@ enum PetType {
 }
 
 type Params = {
+  petId?: string;
   name?: string;
   type?: PetType;
   breed?: string;
@@ -26,31 +27,41 @@ type Params = {
 export default function Home() {
   const token = localStorage.getItem("token");
   const [pets, setPets] = useState<PetInterface[]>([]);
+  const [search, setSearch] = useState<string>("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
+  const handleGetPets = useCallback(
+    async (params?: Params) => {
+      try {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const response = await api.get("/pets", {
+          params: {
+            pet_id: params?.petId,
+            name: search,
+            type: params?.type,
+          },
+        });
+        if (response) {
+          setPets(response.data);
+        }
+      } catch (error) {
+        return error;
+      }
+    },
+    [token, search]
+  );
 
   useEffect(() => {
     handleGetPets();
-  }, []);
-
-  async function handleGetPets(params?: Params) {
-    try {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const response = await api.get("/pets", {
-        params: {
-          type: params?.type,
-        },
-      });
-      if (response) {
-        setPets(response.data);
-      }
-    } catch (error) {
-      return error;
-    }
-  }
+  }, [handleGetPets, search]);
 
   return (
     <div className="home-container">
       <NavBar />
-      <SearchBar />
+      <SearchBar name={search} onChange={handleSearchChange} />
       <div className="tags">
         <Tag
           Icon={BiSolidDog}

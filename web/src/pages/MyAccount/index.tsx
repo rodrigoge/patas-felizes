@@ -7,7 +7,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
 
 export default function MyAccount() {
-  const [password, setPassword] = useState<string>();
+  const [password, setPassword] = useState<string>("");
   const [hidePassword, setHidePassword] = useState(true);
 
   async function handleShowOrHidePassword() {
